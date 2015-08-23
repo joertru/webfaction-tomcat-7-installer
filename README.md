@@ -123,7 +123,7 @@ And restart your Tomcat instance.
 [3]: <https://github.com/elromanos/webfaction-tomcat-7-installer/issues> "Project's issue tracker"
 [4]: <http://community.webfaction.com/questions/4116/install-tomcat-howto-or-step-by-step-tutorial> "Install Tomcat, howto or step by step tutorial"
 [5]: <https://my.webfaction.com/new-application/> "Add new application form"
-[6]: <https://raw.githubusercontent.com/elromanos/webfaction-tomcat-7-installer/blob/master/TomcatInstall> "TomcatInstaller URL"
+[6]: <https://raw.githubusercontent.com/elromanos/webfaction-tomcat-7-installer/master/TomcatInstall> "TomcatInstaller URL"
 [7]: <http://docs.webfaction.com/user-guide/websites.html#create-a-website-with-the-control-panel> "Create or modify a website entry"
 [8]: <https://my.webfaction.com/new-application> "Create new application"
 [9]: <http://www.oracle.com/technetwork/java/javase/downloads/index.html> "Oracle's Java"
