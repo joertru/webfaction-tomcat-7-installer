@@ -1,0 +1,104 @@
+-----BEGIN WEBFACTION INSTALL SCRIPT-----
+#!/bin/env python2.7
+
+"""
+This creates an Apache Tomcat server version 7.0.63.
+
+The front-end web server proxies incoming requests to the Tomcat server
+listening on an unprivileged port.
+
+The installer disables the AJP protocol, as well as the network port Tomcat
+uses to terminate and relies on Linux signals to do so.
+
+A cron job is created to restart the Tomcat server every 20 minutes if
+it is not already running.
+
+To start Tomcat, run: ~/webapps/<app_name>/bin/startup.sh
+To stop Tomcat, run: ~/webapps/<app_name>/bin/shutdown.sh
+
+Tomcat's main logging file is located at ~/logs/user/<app_name>.log
+
+The official Tomcat documentation is available at
+http://tomcat.apache.org/tomcat-7.0-doc/index.html
+
+Some WebFaction specific tips can be found at the README.md file of
+https://github.com/elromanos/webfaction-tomcat-7-installer/blob/master/README.md
+
+"autostart": not applicable
+"extra info": not applicable.
+"""
+
+import sys
+import xmlrpclib
+import platform
+from random import randint
+
+def create(server, session_id, account, app_name, extra_info):
+    # Create the application
+    app = server.create_app(session_id, app_name, 'custom_app_with_port', False, '')
+
+    # Download the source code and place it under the webapp directory
+    url = 'http://pub.rwx.gr/webfaction-installers/apache-tomcat-7.0.63.tar.gz'
+    server.system(session_id, 'curl --silent %s | tar xz --strip 1;' % url)
+
+    # Change the default port tomcat is listening to
+    server.system(session_id, 'sed -i "0,/8080/! {0,/8080/ s/8080/%s/}" conf/server.xml' % app['port'])
+
+    # Disable AJP protocol, which needs an extra port, and our nginx doesn't work with it
+    # There must be a better way to add xml comments... :/
+    server.system(session_id, 'sed -i "/8009/s/-->//" conf/server.xml; sed -i "94i\ \ \ \ -->" conf/server.xml')
+
+    # Disable the shutdown port
+    server.system(session_id, 'sed -i "s/8005/-1/" conf/server.xml')
+
+    # Set JRE_HOME to bin/setenv.sh
+    if platform.machine() == 'x86_64':
+        jre_home ='/usr/lib/jvm/jre-1.6.0-openjdk.x86_64'
+    else:
+        jre_home='/usr/lib/jvm/jre-1.6.0-openjdk'
+    server.system(session_id, 'echo JRE_HOME=%s >> bin/setenv.sh' % jre_home)
+
+    # Store the pid to bin/setenv.sh
+    server.system(session_id, "echo CATALINA_PID='$CATALINA_HOME'/temp/catalina.pid >> bin/setenv.sh")
+
+    # Set the shutdown.sh script to always use the --force switch to stop the service
+    server.system(session_id, 'sed -i "s/stop/stop -force/" bin/shutdown.sh')
+
+    # Tomcat does its own log rotating, but it would be nice to move the main log
+    # to a more familiar directory
+    server.system(session_id, 'ln -s ~/logs/user/%s.log logs/catalina.out' % app['name'])
+
+    # Add a cronjob
+    minute = randint(0, 9)
+    cronjob = '%s,%s,%s * * * * ~/webapps/%s/bin/startup.sh' % (minute, minute + 20, minute + 40, app['name'])
+    server.create_cronjob(session_id, cronjob)
+
+    # Start the instance
+    server.system(session_id, './bin/startup.sh > /dev/null 2>&1')
+
+    print app['id']
+
+def delete(server, session_id, account, app_name, extra_info):
+    # Remove the crontab
+    server.system(session_id, 'crontab -l | grep -v "~/webapps/%s/bin/startup.sh" | crontab -' % app_name)
+
+    # Stop the applicaiton
+    server.system(session_id, '~/webapps/%s/bin/shutdown.sh > /dev/null 2>&1' % app_name)
+
+    # Delete the app
+    server.delete_app(session_id, app_name)
+
+def main(action, username, password, machine, app_name, autostart, extra_info):
+    # Connect to the server
+    server = xmlrpclib.Server('https://api.webfaction.com/')
+    session_id, account = server.login(username, password, machine)
+
+    # Create or delete the app
+    globals()[action](server, session_id, account, app_name, extra_info)
+
+if __name__ == '__main__':
+    try:
+        main(*sys.argv[1:])
+    except xmlrpclib.Fault, e:
+        print e.faultString
+-----END WEBFACTION INSTALL SCRIPT-----
