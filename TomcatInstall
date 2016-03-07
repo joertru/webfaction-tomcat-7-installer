@@ -38,7 +38,7 @@ def create(server, session_id, account, app_name, extra_info):
     app = server.create_app(session_id, app_name, 'custom_app_with_port', False, '')
 
     # Download the source code and place it under the webapp directory
-    url = 'http://pub.rwx.gr/webfaction-installers/apache-tomcat-7.0.63.tar.gz'
+    url = 'https://pub.rwx.gr/webfaction-installers/apache-tomcat-7.0.63.tar.gz'
     server.system(session_id, 'curl --silent %s | tar xz --strip 1;' % url)
 
     # Change the default port tomcat is listening to
