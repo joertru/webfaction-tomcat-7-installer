@@ -54,9 +54,9 @@ def create(server, session_id, account, app_name, extra_info):
 
     # Set JRE_HOME to bin/setenv.sh
     if platform.machine() == 'x86_64':
-        jre_home ='/usr/lib/jvm/jre-1.6.0-openjdk.x86_64'
+        jre_home ='/usr/lib/jvm/jre-1.8.0-openjdk-1.8.0.191.b12-1.el7_6.x86_64'
     else:
-        jre_home='/usr/lib/jvm/jre-1.6.0-openjdk'
+        jre_home='/usr/lib/jvm/jre-1.8.0-openjdk'
     server.system(session_id, 'echo JRE_HOME=%s >> bin/setenv.sh' % jre_home)
 
     # Store the pid to bin/setenv.sh
