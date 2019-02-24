@@ -2,7 +2,7 @@
 
 ## What does it do? ##
 
-This creates an Apache Tomcat server, version 7.0.63, and the front-end web server proxies incoming requests to the Tomcat server listening on an unprivileged port. It also makes some configuration adjustments.
+This creates an Apache Tomcat server, version 8.0.32, and the front-end web server proxies incoming requests to the Tomcat server listening on an unprivileged port. It also makes some configuration adjustments.
 
 The AJP protocol is disabled, since WebFaction is using [nginx][1] as the front-end to proxy incoming requests to the Tomcat server and nginx doesn't support it.
 
