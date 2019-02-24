@@ -38,7 +38,8 @@ def create(server, session_id, account, app_name, extra_info):
     app = server.create_app(session_id, app_name, 'custom_app_with_port', False, '')
 
     # Download the source code and place it under the webapp directory
-    url = 'http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.63/bin/apache-tomcat-7.0.63.tar.gz'
+    # url = 'http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.63/bin/apache-tomcat-7.0.63.tar.gz'
+    url = 'http://archive.apache.org/dist/tomcat/tomcat-8/v8.0.30/bin/apache-tomcat-8.0.30.tar.gz'
     server.system(session_id, 'curl --silent %s | tar xz --strip 1;' % url)
 
     # Change the default port tomcat is listening to
