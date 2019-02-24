@@ -2,7 +2,7 @@
 #!/bin/env python2.7
 
 """
-This creates an Apache Tomcat server version 7.0.63.
+This creates an Apache Tomcat server version 8.0.32.
 
 The front-end web server proxies incoming requests to the Tomcat server
 listening on an unprivileged port.
@@ -19,7 +19,7 @@ To stop Tomcat, run: ~/webapps/<app_name>/bin/shutdown.sh
 Tomcat's main logging file is located at ~/logs/user/<app_name>.log
 
 The official Tomcat documentation is available at
-http://tomcat.apache.org/tomcat-7.0-doc/index.html
+http://tomcat.apache.org/tomcat-8.0-doc/index.html
 
 Some WebFaction specific tips can be found at the README.md file of
 https://github.com/elromanos/webfaction-tomcat-7-installer/blob/master/README.md
